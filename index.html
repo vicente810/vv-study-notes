@@ -230,8 +230,8 @@ function cardCount(sec) {
     BOOKS.filter(function (b) { return !sec || b.sec === sec; }).length;
 }
 
-var SIZES = [{ px: 16, name: "Small" }, { px: 18, name: "Medium" }, { px: 20, name: "Large" }, { px: 23, name: "Extra large" }];
-var sizeIdx = 2;
+var SIZES = [{ px: 16, name: "Small" }, { px: 18, name: "Medium" }, { px: 20, name: "Large" }, { px: 23, name: "Extra large" }, { px: 27, name: "Huge" }, { px: 31, name: "Giant" }];
+var sizeIdx = 4;
 var app = document.getElementById("app");
 
 function store(k, v) { try { if (v === undefined) { return localStorage.getItem(k); } localStorage.setItem(k, v); } catch (e) {} return null; }
@@ -399,8 +399,8 @@ function route() {
 
 document.getElementById("brand").innerHTML = icon("bible", 22) + "VV Study Notes";
 document.getElementById("toTop").innerHTML = icon("up", 18) + "Top";
-document.getElementById("smaller").addEventListener("click", function () { if (sizeIdx > 0) { sizeIdx--; store("vv-size", String(sizeIdx)); applySize(); onScroll(); } });
-document.getElementById("larger").addEventListener("click", function () { if (sizeIdx < SIZES.length - 1) { sizeIdx++; store("vv-size", String(sizeIdx)); applySize(); onScroll(); } });
+document.getElementById("smaller").addEventListener("click", function () { if (sizeIdx > 0) { sizeIdx--; store("vv-size2", String(sizeIdx)); applySize(); onScroll(); } });
+document.getElementById("larger").addEventListener("click", function () { if (sizeIdx < SIZES.length - 1) { sizeIdx++; store("vv-size2", String(sizeIdx)); applySize(); onScroll(); } });
 document.getElementById("theme").addEventListener("click", function () {
   var t = isDark() ? "light" : "dark";
   document.documentElement.setAttribute("data-theme", t);
@@ -462,7 +462,7 @@ var savedTheme = store("vv-theme");
 if (savedTheme === "dark") { document.documentElement.setAttribute("data-theme", "dark"); }
 var savedSpeed = store("vv-speed");
 if (savedSpeed === "slow" || savedSpeed === "medium" || savedSpeed === "fast") { speed = savedSpeed; }
-var savedSize = parseInt(store("vv-size"), 10);
+var savedSize = parseInt(store("vv-size2"), 10);
 if (savedSize >= 0 && savedSize < SIZES.length) { sizeIdx = savedSize; }
 applySize();
 paintThemeBtn();
