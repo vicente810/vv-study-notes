@@ -178,6 +178,7 @@ var NOTES = [
     desc: "John Paul II, July 1999: summaries with five meditation points each.", meta: "John Paul II · 21 July 1999 · Homily 1 of 3 shown",
     real: true,
     body: [
+      { video: "heaven-note.mp4" },
       { h: "Heaven: fullness of communion with God" },
       { p: `Heaven is not a physical place in the clouds but a living, personal relationship with the Holy Trinity—our meeting with the Father through the risen Christ in communion with the Holy Spirit. It represents the ultimate fulfillment of the deepest human longings and the state of supreme, definitive happiness. The Pope emphasizes that those who welcome God's love into their lives and sincerely open themselves to His grace, at least at the moment of death, will enjoy this fullness of communion with God as the goal of human life. Scripture portrays heaven as both the transcendent dwelling-place of the living God and the place to which believers, through grace, can ascend.` },
       { p: `The New Testament amplifies this concept through Christ's mystery: Jesus passed through the heavens and entered heaven itself, raising believers with Him and making them citizens of heaven. The sacramental life, centered on the Eucharist, anticipates heaven in the present by offering a foretaste of the joy and peace we will enjoy in definitive communion with God. Heaven is the blessed community of all who are perfectly incorporated into Christ, where the fruits of redemption are fully possessed and the beatific vision—seeing God face to face—becomes eternal reality.` },
@@ -290,6 +291,7 @@ function renderDirectory(filter) {
 }
 
 function blockHtml(b) {
+  if (b.video) { return '<video controls playsinline preload="metadata" src="' + esc(b.video) + '" style="width:100%;border-radius:14px;margin:0 0 24px;background:#16120e"></video>'; }
   if (b.h) { return "<h2>" + esc(b.h) + "</h2>"; }
   if (b.p) { return "<p>" + esc(b.p) + "</p>"; }
   return "<ol>" + b.ol.map(function (i) { return "<li><b>" + esc(i[0]) + ".</b> " + esc(i[1]) + "</li>"; }).join("") + "</ol>";
