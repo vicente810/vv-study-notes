@@ -32,6 +32,12 @@ window.NOTES_CREED = [
   "flag": "",
   "body": [
    {
+    "video": "apostles-creed.mp4"
+   },
+   {
+    "p": "*Video: the Apostles' Creed, prayed slowly (about two minutes).*"
+   },
+   {
     "p": "**Series:** [Contents](#creed) · Followed by [Article 1](#creed-1)"
    },
    {
