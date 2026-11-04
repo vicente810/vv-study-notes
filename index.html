@@ -84,6 +84,10 @@ h1 { font-weight: 800; font-size: clamp(36px, 8vw, 68px); line-height: 1; letter
 .prose p { margin: 0 0 1.1em; }
 .prose h2 { font: 800 1.05em var(--display); letter-spacing: -0.01em; margin: 1.8em 0 .6em; }
 .prose ol { padding-left: 1.3em; margin: 0 0 1.1em; }
+.prose ul { padding-left: 1.3em; margin: 0 0 1.1em; }
+.prose blockquote { margin: 0 0 1.3em; padding: 4px 0 4px 16px; border-left: 4px solid var(--c, var(--faith)); font-style: italic; }
+.prose a { color: var(--c, var(--faith)); font-weight: 700; text-underline-offset: 3px; }
+.prose i { font-style: italic; }
 .prose li { margin-bottom: .9em; }
 .prose li b { font-weight: 800; }
 .note-flag { font: 500 13px var(--display); color: var(--muted); border: 1px dashed var(--line); border-radius: 10px; padding: 10px 12px; margin: 0 0 24px; }
@@ -135,6 +139,7 @@ h1 { font-weight: 800; font-size: clamp(36px, 8vw, 68px); line-height: 1; letter
   <button class="dockbtn" id="toTop" type="button"></button>
 </div>
 
+<script src="notes-creed.js"></script>
 <script>
 var ICONS = {
   bible: '<path d="M12 6c-2-1.5-5-2-8-1.5v13c3-.5 6 0 8 1.5 2-1.5 5-2 8-1.5v-13C17 4 14 4.5 12 6z"/><path d="M12 6v13.5"/><path d="M16.5 8.5v5M15 10.5h3"/>',
@@ -177,6 +182,7 @@ var NOTES = [
   { id: "note-heaven-hell-purgatory", sec: "faith", icon: "glory", series: "Wednesday audiences", title: "Heaven, Hell and Purgatory",
     desc: "John Paul II, July 1999: summaries with five meditation points each.", meta: "John Paul II · 21 July 1999 · Homily 1 of 3 shown",
     real: true,
+    flag: "Homily 1 of 3 is shown. Hell and Purgatory will be added from the full note.",
     body: [
       { video: "heaven-note.mp4" },
       { h: "Heaven: fullness of communion with God" },
@@ -191,18 +197,9 @@ var NOTES = [
         ["The beatific vision as life's true hope", `Contemplate the promise of seeing God "face to face" in the beatific vision. What would it mean to live today with the joyful awareness that one day I will see God Himself? How can this hope transform my suffering, struggles, and daily trials into opportunities to grow in love for the One I will spend eternity with?`]
       ] }
     ] },
-  { id: "note-jp2-jesus-christ", sec: "faith", icon: "chirho", series: "Wednesday audiences", title: "John Paul II: Jesus Christ", desc: "The catechesis on Christ, in series order.", meta: "Sample note" },
-  { id: "note-thomas-aquinas", sec: "faith", icon: "sun", series: "Bishop Robert Barron", title: "Thomas Aquinas", desc: "God, creation, providence, the soul and happiness.", meta: "Sample note" },
-  { id: "note-the-church", sec: "faith", icon: "church", series: "Apologetics", title: "The Church", desc: "A study series for the honest skeptic.", meta: "Sample note" },
-  { id: "note-apologetics-qa", sec: "faith", icon: "qa", series: "Apologetics", title: "Apologetics Q&A", desc: "Questions about God, Christ, the Church and history.", meta: "Sample note" },
-  { id: "note-christianity-islam", sec: "faith", icon: "crescent", series: "Apologetics", title: "Christianity and Islam", desc: "What each tradition teaches, and where they differ.", meta: "Sample note" },
-  { id: "note-sleep-basics", sec: "health", icon: "candle", series: "Daily habits", title: "Sleep Basics", desc: "Wake time, light and a short evening routine.", meta: "Sample note" },
-  { id: "note-walking-plan", sec: "health", icon: "shell", series: "Movement", title: "Walking Plan", desc: "Thirty minutes a day, built up in small steps.", meta: "Sample note" },
-  { id: "note-deep-work", sec: "mindforge", icon: "lamp", series: "Focus", title: "Deep Work Blocks", desc: "Ninety minutes, one task, phone in another room.", meta: "Sample note" },
-  { id: "note-memory-review", sec: "mindforge", icon: "rosary", series: "Learning", title: "Spaced Review", desc: "Reviewing a note on day 1, 3, 7 and 21.", meta: "Sample note" },
-  { id: "note-obsidian-vault", sec: "tech", icon: "keys", series: "Tools", title: "Obsidian Vault Care", desc: "Folders, links and backups for a large vault.", meta: "Sample note" },
-  { id: "note-github-pages", sec: "tech", icon: "dove", series: "Publishing", title: "GitHub Pages", desc: "Publishing a folder of notes as a small site.", meta: "Sample note" }
 ];
+
+NOTES = NOTES.concat(window.NOTES_CREED || []);
 
 function sampleBody(n) {
   return [
@@ -270,7 +267,7 @@ function listHtml(filter, query) {
 function renderDirectory(filter) {
   var sec = secById(filter);
   var pills = '<a class="pill" href="#home"' + (filter === "home" ? ' aria-current="page"' : "") + '>All</a>' +
-    SECTIONS.map(function (s) {
+    SECTIONS.filter(function (s) { return NOTES.some(function (n) { return n.sec === s.id; }); }).map(function (s) {
       return '<a class="pill" style="--c:var(' + s.cssVar + ')" href="#' + s.id + '"' + (filter === s.id ? ' aria-current="page"' : "") + '><i></i>' + esc(s.name) + '</a>';
     }).join("");
   var count = sec ? NOTES.filter(function (n) { return n.sec === filter; }).length : NOTES.length;
@@ -290,10 +287,19 @@ function renderDirectory(filter) {
   });
 }
 
+function inline(t) {
+  return esc(t)
+    .replace(/\[([^\]]+)\]\(#([a-z0-9-]+)\)/g, '<a href="#$2">$1</a>')
+    .replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>")
+    .replace(/\*([^*\n]+)\*/g, "<i>$1</i>");
+}
+
 function blockHtml(b) {
   if (b.video) { return '<video controls playsinline preload="metadata" src="' + esc(b.video) + '" style="width:100%;border-radius:14px;margin:0 0 24px;background:#16120e"></video>'; }
   if (b.h) { return "<h2>" + esc(b.h) + "</h2>"; }
-  if (b.p) { return "<p>" + esc(b.p) + "</p>"; }
+  if (b.p) { return "<p>" + inline(b.p) + "</p>"; }
+  if (b.ul) { return "<ul>" + b.ul.map(function (x) { return "<li>" + inline(x) + "</li>"; }).join("") + "</ul>"; }
+  if (b.quote) { return "<blockquote>" + b.quote.map(inline).join("<br>") + "</blockquote>"; }
   return "<ol>" + b.ol.map(function (i) { return "<li><b>" + esc(i[0]) + ".</b> " + esc(i[1]) + "</li>"; }).join("") + "</ol>";
 }
 
@@ -316,7 +322,7 @@ function renderReader(n) {
     '<div class="toolrow"><button class="tint pillbtn" type="button" data-play="1"></button>' +
     '<div class="seg tint" role="group" aria-label="Scroll speed"><button type="button" data-speed="slow">Slow</button><button type="button" data-speed="medium">Medium</button><button type="button" data-speed="fast">Fast</button></div>' +
     '<button class="tint pillbtn" type="button" data-down="1">' + icon("down", 18) + 'Page down</button></div>' +
-    (n.real ? '<p class="note-flag">Homily 1 of 3 is shown. Hell and Purgatory will be added from the full note.</p>' : '<p class="note-flag">Sample text. Replace with the real note.</p>') +
+    (n.flag ? '<p class="note-flag">' + esc(n.flag) + '</p>' : "") +
     '<div class="prose">' + body.map(blockHtml).join("") + '</div>' +
     '<nav class="endnav" aria-label="Move through ' + esc(s.name) + ' notes">' + back +
     '<button class="big top" type="button" data-top="1">' + icon("up", 20) + 'Return to top</button>' + nxt + '</nav></article>';
