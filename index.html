@@ -309,14 +309,16 @@ function renderDirectory(filter) {
 function inline(t) {
   return esc(t)
     .replace(/\[([^\]]+)\]\(#([a-z0-9-]+)\)/g, '<a href="#$2">$1</a>')
-    .replace(/\[([^\]]+)\]\((https:\/\/[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
+    .replace(/\*\*\*([^*]+)\*\*\*/g, "<b><i>$1</i></b>")
     .replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>")
-    .replace(/\*([^*\n]+)\*/g, "<i>$1</i>");
+    .replace(/\*([^*\n]+)\*/g, "<i>$1</i>")
+    .replace(/\*+/g, "");
 }
 
 function blockHtml(b) {
   if (b.video) { return '<video controls playsinline preload="metadata" src="' + esc(b.video) + '" style="width:100%;border-radius:14px;margin:0 0 24px;background:#16120e"></video>'; }
-  if (b.h) { return "<h2>" + esc(b.h) + "</h2>"; }
+  if (b.h) { return "<h2>" + esc(b.h).replace(/\*+/g, "") + "</h2>"; }
   if (b.p) { return "<p>" + inline(b.p) + "</p>"; }
   if (b.ul) { return "<ul>" + b.ul.map(function (x) { return "<li>" + inline(x) + "</li>"; }).join("") + "</ul>"; }
   if (b.quote) { return "<blockquote>" + b.quote.map(inline).join("<br>") + "</blockquote>"; }
