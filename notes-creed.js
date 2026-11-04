@@ -21,7 +21,7 @@ window.NOTES_CREED = [
  {
   "id": "creed-00",
   "sec": "faith",
-  "icon": "cross",
+  "icon": "creeds",
   "book": "creed",
   "hub": false,
   "series": "Introduction",
@@ -102,7 +102,7 @@ window.NOTES_CREED = [
  {
   "id": "creed-1",
   "sec": "faith",
-  "icon": "cross",
+  "icon": "creation",
   "book": "creed",
   "hub": false,
   "series": "Article 1",
@@ -280,7 +280,7 @@ window.NOTES_CREED = [
  {
   "id": "creed-2",
   "sec": "faith",
-  "icon": "cross",
+  "icon": "chirho",
   "book": "creed",
   "hub": false,
   "series": "Article 2",
@@ -446,7 +446,7 @@ window.NOTES_CREED = [
  {
   "id": "creed-3",
   "sec": "faith",
-  "icon": "cross",
+  "icon": "star",
   "book": "creed",
   "hub": false,
   "series": "Article 3",
@@ -544,7 +544,7 @@ window.NOTES_CREED = [
  {
   "id": "creed-4",
   "sec": "faith",
-  "icon": "cross",
+  "icon": "calvary",
   "book": "creed",
   "hub": false,
   "series": "Article 4",
@@ -661,7 +661,7 @@ window.NOTES_CREED = [
  {
   "id": "creed-5",
   "sec": "faith",
-  "icon": "cross",
+  "icon": "tomb",
   "book": "creed",
   "hub": false,
   "series": "Article 5",
@@ -762,7 +762,7 @@ window.NOTES_CREED = [
  {
   "id": "creed-6",
   "sec": "faith",
-  "icon": "cross",
+  "icon": "ascend",
   "book": "creed",
   "hub": false,
   "series": "Article 6",
@@ -863,7 +863,7 @@ window.NOTES_CREED = [
  {
   "id": "creed-7",
   "sec": "faith",
-  "icon": "cross",
+  "icon": "scales",
   "book": "creed",
   "hub": false,
   "series": "Article 7",
@@ -970,7 +970,7 @@ window.NOTES_CREED = [
  {
   "id": "creed-8",
   "sec": "faith",
-  "icon": "cross",
+  "icon": "dove",
   "book": "creed",
   "hub": false,
   "series": "Article 8",
@@ -1107,7 +1107,7 @@ window.NOTES_CREED = [
  {
   "id": "creed-9",
   "sec": "faith",
-  "icon": "cross",
+  "icon": "church",
   "book": "creed",
   "hub": false,
   "series": "Article 9",
@@ -1233,7 +1233,7 @@ window.NOTES_CREED = [
  {
   "id": "creed-10",
   "sec": "faith",
-  "icon": "cross",
+  "icon": "keys",
   "book": "creed",
   "hub": false,
   "series": "Article 10",
@@ -1331,7 +1331,7 @@ window.NOTES_CREED = [
  {
   "id": "creed-11",
   "sec": "faith",
-  "icon": "cross",
+  "icon": "sunrise",
   "book": "creed",
   "hub": false,
   "series": "Article 11",
@@ -1428,7 +1428,7 @@ window.NOTES_CREED = [
  {
   "id": "creed-12",
   "sec": "faith",
-  "icon": "cross",
+  "icon": "infinity",
   "book": "creed",
   "hub": false,
   "series": "Article 12",
@@ -1522,7 +1522,7 @@ window.NOTES_CREED = [
  {
   "id": "creed-13",
   "sec": "faith",
-  "icon": "cross",
+  "icon": "anchor",
   "book": "creed",
   "hub": false,
   "series": "Closing synthesis",
