@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VV Study Notes</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,800&display=swap">
+<style>
+/* Layout: sticky top bar, directory of section bands with note cards, separate reader view. Routing by hash. Light is the default; dark is opt-in. */
+:root {
+  --bg: #f2f4f7; --surface: #ffffff; --ink: #16181d; --muted: #5d6470; --line: #dfe3e9;
+  --faith: #a8661a; --health: #1f7f66; --mind: #7a4fb0; --tech: #2f6fbf; --on-accent: #ffffff;
+  --display: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
+  --read: var(--display);
+  --mono: var(--display);
+  color-scheme: light;
+  --read-size: 20px;
+}
+:root[data-theme="dark"] {
+  --bg: #101216; --surface: #1a1d23; --ink: #eef0f3; --muted: #9aa2ae; --line: #2a2e36;
+  --faith: #e0a05a; --health: #4fc3a1; --mind: #b896e8; --tech: #78a9ec; --on-accent: #101216;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { background: var(--bg); color: var(--ink); font-family: var(--display); font-weight: 500; line-height: 1.5; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 0 72px; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+a { color: inherit; text-decoration: none; }
+:focus-visible { outline: 2px solid var(--tech); outline-offset: 2px; border-radius: 6px; }
+svg.ic { display: block; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.wrap { max-width: 1080px; margin: 0 auto; }
+
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 9; background: var(--bg); border-bottom: 1px solid var(--line); }
+.bar .wrap { display: flex; align-items: center; gap: 12px; min-height: 56px; flex-wrap: wrap; padding-block: 6px; }
+.brand { font-weight: 800; font-size: 18px; letter-spacing: -0.01em; display: inline-flex; align-items: center; gap: 8px; }
+.spacer { flex: 1; }
+.ctl { display: inline-flex; align-items: center; gap: 4px; }
+.btn { font: 500 14px/1 var(--display); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 9px 12px; cursor: pointer; min-height: 38px; }
+.btn:hover { border-color: var(--muted); }
+.btn[disabled] { opacity: .4; cursor: default; }
+.size-label { font: 500 12px var(--display); color: var(--muted); min-width: 84px; text-align: center; }
+#progress { position: fixed; left: 0; top: env(safe-area-inset-top, 0px); height: 3px; width: 0; background: var(--faith); z-index: 11; }
+
+.head { padding-block: 40px 20px; }
+.hero { display: flex; align-items: center; gap: 16px; }
+.hicon { flex: none; width: 64px; height: 64px; border-radius: 16px; background: var(--c, var(--ink)); color: var(--on-accent); display: grid; place-items: center; }
+.hero > div { min-width: 0; }
+.eyebrow { font: 500 12px var(--display); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 0 0 6px; }
+h1 { font-weight: 800; font-size: clamp(36px, 8vw, 68px); line-height: 1; letter-spacing: -0.03em; margin: 0; text-wrap: balance; }
+.lede { color: var(--muted); font-size: 18px; margin: 14px 0 0; max-width: 46ch; }
+.tools { display: flex; flex-direction: column; gap: 14px; padding-block: 12px 28px; }
+.search { width: 100%; font: 500 16px var(--display); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+.search::placeholder { color: var(--muted); }
+.pills { display: flex; flex-wrap: wrap; gap: 8px; }
+.pill { font-weight: 800; font-size: 14px; padding: 9px 16px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); display: inline-flex; align-items: center; gap: 8px; }
+.pill i { width: 9px; height: 9px; border-radius: 50%; background: var(--c, var(--ink)); display: inline-block; }
+.pill[aria-current="page"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+.section { margin-bottom: 36px; scroll-margin-top: 80px; }
+.band { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--c); color: var(--on-accent); border-radius: 12px; padding: 12px 18px; margin-bottom: 14px; }
+.band h2 { margin: 0; font-weight: 800; font-size: 22px; letter-spacing: .06em; text-transform: uppercase; display: flex; align-items: center; gap: 10px; }
+.band a { font: 500 12px var(--display); border: 1px solid currentColor; border-radius: 999px; padding: 6px 12px; opacity: .9; }
+.band a:hover { opacity: 1; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 290px), 1fr)); gap: 14px; }
+.card { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; align-content: start; }
+.card:hover { border-color: var(--c); }
+.tile { width: 56px; height: 56px; border-radius: 14px; background: var(--c); color: var(--on-accent); display: grid; place-items: center; }
+.card .eyebrow { font-size: 11px; margin: 0 0 4px; }
+.card h3 { margin: 0 0 4px; font-weight: 800; font-size: 19px; line-height: 1.2; text-wrap: balance; }
+.card p { margin: 0 0 8px; color: var(--muted); font-size: 15px; }
+.go { font: 500 12px var(--display); color: var(--c); }
+.badge { font: 500 10px var(--display); letter-spacing: .08em; text-transform: uppercase; border: 1px solid var(--line); color: var(--muted); border-radius: 999px; padding: 2px 8px; margin-left: 6px; }
+.empty { color: var(--muted); padding: 24px 0; }
+
+.reader { max-width: 680px; margin: 0 auto; padding-block: 36px 24px; }
+.reader .hicon { width: 56px; height: 56px; border-radius: 14px; }
+.reader .eyebrow { color: var(--c); }
+.reader h1 { font-size: clamp(30px, 6vw, 46px); line-height: 1.05; }
+.reader .meta { color: var(--muted); font: 500 13px var(--display); margin: 14px 0 24px; }
+.prose { font-family: var(--read); font-weight: 400; font-size: var(--read-size); line-height: 1.65; }
+.prose p { margin: 0 0 1.1em; }
+.prose h2 { font: 800 1.05em var(--display); letter-spacing: -0.01em; margin: 1.8em 0 .6em; }
+.prose ol { padding-left: 1.3em; margin: 0 0 1.1em; }
+.prose li { margin-bottom: .9em; }
+.prose li b { font-weight: 800; }
+.note-flag { font: 500 13px var(--display); color: var(--muted); border: 1px dashed var(--line); border-radius: 10px; padding: 10px 12px; margin: 0 0 24px; }
+
+.endnav { margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--line); display: grid; grid-template-columns: minmax(0, 1fr) minmax(88px, auto) minmax(0, 1fr); gap: 10px; align-items: stretch; }
+.big, .tint { --tint: var(--c, var(--muted)); background: var(--surface); background: color-mix(in srgb, var(--tint) 12%, var(--surface)); border: 1px solid var(--line); border-color: color-mix(in srgb, var(--tint) 35%, var(--surface)); color: var(--ink); }
+.big { display: flex; flex-direction: column; gap: 2px; min-width: 0; font: 800 16px var(--display); border-radius: 12px; padding: 14px 14px; cursor: pointer; text-align: left; }
+.big:hover, .tint:hover { border-color: var(--tint); }
+.big small { font: 500 12px var(--display); color: var(--muted); overflow-wrap: anywhere; }
+.big.next { text-align: right; align-items: flex-end; }
+.big.top { align-items: center; justify-content: center; text-align: center; gap: 4px; font-size: 14px; }
+.toolrow { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 22px; }
+.pillbtn { font: 800 14px var(--display); border-radius: 999px; padding: 10px 16px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+.seg { display: inline-flex; border-radius: 999px; overflow: hidden; --tint: var(--c, var(--muted)); }
+.seg button { font: 800 13px var(--display); padding: 10px 13px; background: transparent; border: 0; color: var(--ink); cursor: pointer; }
+.seg button + button { border-left: 1px solid color-mix(in srgb, var(--tint) 35%, var(--surface)); }
+.seg button[aria-pressed="true"] { background: var(--tint); color: var(--on-accent); }
+
+.dock { align-items: flex-end; position: fixed; z-index: 9; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); display: flex; flex-direction: column; gap: 8px; }
+.dockbtn { height: 44px; border-radius: 999px; padding: 0 16px; font: 800 14px var(--display); display: inline-flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; --tint: var(--c, var(--muted)); background: var(--surface); background: color-mix(in srgb, var(--tint) 12%, var(--surface)); border: 1px solid var(--line); border-color: color-mix(in srgb, var(--tint) 35%, var(--surface)); color: var(--ink); }
+.dockbtn:hover { border-color: var(--tint); }
+.dockbtn[disabled] { opacity: .35; cursor: default; }
+@media (max-width: 520px) { .size-label { min-width: 64px; } .hicon { width: 52px; height: 52px; } .big { font-size: 14px; padding: 12px 10px; } .endnav { grid-template-columns: minmax(0, 1fr) 76px minmax(0, 1fr); gap: 8px; } }
+@media (prefers-reduced-motion: no-preference) { .card { transition: border-color .15s; } }
+</style>
+</head>
+<body>
+
+<div id="progress" hidden></div>
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="#home" id="brand"></a>
+    <span class="spacer"></span>
+    <span class="ctl" id="sizectl" hidden>
+      <span class="size-label" style="min-width:0">Text</span>
+      <button class="btn" id="smaller" type="button" aria-label="Smaller text">A&minus;</button>
+      <span class="size-label" id="sizelabel" aria-live="polite"></span>
+      <button class="btn" id="larger" type="button" aria-label="Larger text">A+</button>
+    </span>
+    <button class="btn" id="theme" type="button" aria-label="Switch between light and dark"></button>
+  </div>
+</header>
+<main class="wrap" id="app"></main>
+<div class="dock" id="dock" hidden>
+  <div class="seg tint" role="group" aria-label="Scroll speed">
+    <button type="button" data-speed="slow">Slow</button><button type="button" data-speed="medium">Medium</button><button type="button" data-speed="fast">Fast</button>
+  </div>
+  <button class="dockbtn" type="button" data-play="1"></button>
+  <button class="dockbtn" id="toTop" type="button"></button>
+</div>
+
+<script>
+var ICONS = {
+  bible: '<path d="M12 6c-2-1.5-5-2-8-1.5v13c3-.5 6 0 8 1.5 2-1.5 5-2 8-1.5v-13C17 4 14 4.5 12 6z"/><path d="M12 6v13.5"/><path d="M16.5 8.5v5M15 10.5h3"/>',
+  cross: '<path d="M12 3v18M7 9h10"/>',
+  glory: '<path d="M12 7v10M9 10h6"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.4 1.4M17.6 17.6L19 19M19 5l-1.4 1.4M6.4 17.6L5 19"/>',
+  chirho: '<path d="M12 3v18M7.5 9l9 9M16.5 9l-9 9"/><path d="M12 3h2a3 3 0 0 1 0 6h-2"/>',
+  sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/>',
+  church: '<path d="M12 2v4M10 4h4"/><path d="M6 21V11l6-4 6 4v10"/><path d="M10 21v-4a2 2 0 0 1 4 0v4"/><path d="M3 21h18"/>',
+  qa: '<path d="M4 5h16v11h-9l-4 4v-4H4z"/><path d="M12 7.5v6M9.5 10h5"/>',
+  crescent: '<path d="M6 6v13M2.5 10h7"/><g transform="translate(9.5 2) scale(.62)"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></g>',
+  door: '<path d="M12 1.5v4M10.5 3h3"/><path d="M7 21V7.5h10V21M4 21h16"/><path d="M14.5 14.5h.01"/>',
+  heart: '<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21.2l7.8-7.7 1-1.1a5.5 5.5 0 0 0 0-7.8z"/><path d="M12 8.5v6M9.5 11h5"/>',
+  flame: '<path d="M12 3c1 3.5 5 5.5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5 0 2 1 3 2 3 .5-3-1-5 1-8.5z"/>',
+  anchor: '<circle cx="12" cy="5" r="2"/><path d="M12 7v14M8 11h8"/><path d="M5 14c0 3.9 3.1 7 7 7s7-3.1 7-7M5 14l-2 2M19 14l2 2"/>',
+  candle: '<path d="M12 2c1.2 1.6 2 2.6 2 4a2 2 0 0 1-4 0c0-1.4.8-2.4 2-4z"/><path d="M8 10h8v11H8zM6 21h12"/>',
+  shell: '<path d="M12 21L3.5 10a9 9 0 0 1 17 0z"/><path d="M12 21L8.5 7.5M12 21l3.5-13.5M12 21V6.5"/>',
+  lamp: '<path d="M4 14h13c-.8 3.2-3 5-6 5H9c-3 0-5-2-5-5z"/><path d="M17 14l4-3"/><path d="M8 11c0-1.8 1-2.6 1-4.5 1.4.9 2.2 2.7 1 4.5"/>',
+  rosary: '<circle cx="12" cy="4.2" r=".9"/><circle cx="16.5" cy="6.1" r=".9"/><circle cx="18.4" cy="10.5" r=".9"/><circle cx="16.5" cy="14.9" r=".9"/><circle cx="12" cy="16.8" r=".9"/><circle cx="7.5" cy="14.9" r=".9"/><circle cx="5.6" cy="10.5" r=".9"/><circle cx="7.5" cy="6.1" r=".9"/><path d="M12 17.7V23M10 20h4"/>',
+  keys: '<circle cx="6" cy="6" r="2.5"/><path d="M7.8 7.8L21 21M16.5 21l2.5-2.5"/><circle cx="18" cy="6" r="2.5"/><path d="M16.2 7.8L3 21M7.5 21l-2.5-2.5"/>',
+  dove: '<path d="M3 13.5c2.6.4 4.6-.3 6-2l-2-4.5c2.7.3 4.6 1.6 5.8 3.6 1.6-2.3 3.9-3.4 7.2-3.4-.6 2.4-1.6 4-3 5 .3 3.6-2.7 7.3-8 7.3-2.8 0-5.2-1.5-6-6z"/><path d="M16 9.5h.01"/>',
+  up: '<path d="M12 19V5M6 11l6-6 6 6"/>',
+  play: '<path d="M8 5l11 7-11 7z"/>',
+  pause: '<path d="M8 5v14M16 5v14"/>',
+  down: '<path d="M12 5v14M6 13l6 6 6-6"/>',
+  left: '<path d="M19 12H5M11 6l-6 6 6 6"/>',
+  right: '<path d="M5 12h14M13 6l6 6-6 6"/>'
+};
+function icon(name, size) {
+  return '<svg class="ic" width="' + size + '" height="' + size + '" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' + ICONS[name] + '</svg>';
+}
+
+var SECTIONS = [
+  { id: "faith", name: "Faith", cssVar: "--faith", icon: "cross", lede: "Faith notes, kept short." },
+  { id: "health", name: "Health", cssVar: "--health", icon: "heart", lede: "Health notes, kept short." },
+  { id: "mindforge", name: "Mindforge", cssVar: "--mind", icon: "flame", lede: "Mindforge notes, kept short." },
+  { id: "tech", name: "Tech", cssVar: "--tech", icon: "anchor", lede: "Tech notes, kept short." }
+];
+
+var NOTES = [
+  { id: "note-heaven-hell-purgatory", sec: "faith", icon: "glory", series: "Wednesday audiences", title: "Heaven, Hell and Purgatory",
+    desc: "John Paul II, July 1999: summaries with five meditation points each.", meta: "John Paul II · 21 July 1999 · Homily 1 of 3 shown",
+    real: true,
+    body: [
+      { h: "Heaven: fullness of communion with God" },
+      { p: `Heaven is not a physical place in the clouds but a living, personal relationship with the Holy Trinity—our meeting with the Father through the risen Christ in communion with the Holy Spirit. It represents the ultimate fulfillment of the deepest human longings and the state of supreme, definitive happiness. The Pope emphasizes that those who welcome God's love into their lives and sincerely open themselves to His grace, at least at the moment of death, will enjoy this fullness of communion with God as the goal of human life. Scripture portrays heaven as both the transcendent dwelling-place of the living God and the place to which believers, through grace, can ascend.` },
+      { p: `The New Testament amplifies this concept through Christ's mystery: Jesus passed through the heavens and entered heaven itself, raising believers with Him and making them citizens of heaven. The sacramental life, centered on the Eucharist, anticipates heaven in the present by offering a foretaste of the joy and peace we will enjoy in definitive communion with God. Heaven is the blessed community of all who are perfectly incorporated into Christ, where the fruits of redemption are fully possessed and the beatific vision—seeing God face to face—becomes eternal reality.` },
+      { h: "Five meditation points for transformation" },
+      { ol: [
+        ["Encountering God's personal love", `Meditate on heaven as a personal relationship with the Trinity, not an abstract state. How can I deepen my encounter with God's love today through prayer, especially the Eucharist, so that I begin tasting heavenly communion now? When I receive the Eucharist, am I truly meeting Christ in person?`],
+        ["Living for eternal life", `Reflect on the truth that my ultimate goal is heaven—perfect communion with God. How does this truth change my priorities? What earthly attachments or concerns am I clinging to that distance me from seeking "the things that are above, where Christ is seated"?`],
+        ["The sacramental anticipation", `Consider how the sacraments, especially the Eucharist, are meant to be foretastes of heaven. How can I receive the Eucharist with greater reverence and awareness that I am truly being united with Christ and the communion of saints? Am I grateful enough for this daily miracle?`],
+        ["Fraternal charity as heavenly practice", `Meditate on the connection between heavenly communion and earthly fraternal charity. If heaven is perfect communion with God and all the blessed, how should I treat my brothers and sisters in Christ now? How can acts of selfless love prefigure my eternal life?`],
+        ["The beatific vision as life's true hope", `Contemplate the promise of seeing God "face to face" in the beatific vision. What would it mean to live today with the joyful awareness that one day I will see God Himself? How can this hope transform my suffering, struggles, and daily trials into opportunities to grow in love for the One I will spend eternity with?`]
+      ] }
+    ] },
+  { id: "note-jp2-jesus-christ", sec: "faith", icon: "chirho", series: "Wednesday audiences", title: "John Paul II: Jesus Christ", desc: "The catechesis on Christ, in series order.", meta: "Sample note" },
+  { id: "note-thomas-aquinas", sec: "faith", icon: "sun", series: "Bishop Robert Barron", title: "Thomas Aquinas", desc: "God, creation, providence, the soul and happiness.", meta: "Sample note" },
+  { id: "note-the-church", sec: "faith", icon: "church", series: "Apologetics", title: "The Church", desc: "A study series for the honest skeptic.", meta: "Sample note" },
+  { id: "note-apologetics-qa", sec: "faith", icon: "qa", series: "Apologetics", title: "Apologetics Q&A", desc: "Questions about God, Christ, the Church and history.", meta: "Sample note" },
+  { id: "note-christianity-islam", sec: "faith", icon: "crescent", series: "Apologetics", title: "Christianity and Islam", desc: "What each tradition teaches, and where they differ.", meta: "Sample note" },
+  { id: "note-jehovahs-witnesses", sec: "faith", icon: "door", series: "Apologetics", title: "Jehovah's Witnesses", desc: "Main points of disagreement and how to discuss them.", meta: "Sample note" },
+  { id: "note-sleep-basics", sec: "health", icon: "candle", series: "Daily habits", title: "Sleep Basics", desc: "Wake time, light and a short evening routine.", meta: "Sample note" },
+  { id: "note-walking-plan", sec: "health", icon: "shell", series: "Movement", title: "Walking Plan", desc: "Thirty minutes a day, built up in small steps.", meta: "Sample note" },
+  { id: "note-deep-work", sec: "mindforge", icon: "lamp", series: "Focus", title: "Deep Work Blocks", desc: "Ninety minutes, one task, phone in another room.", meta: "Sample note" },
+  { id: "note-memory-review", sec: "mindforge", icon: "rosary", series: "Learning", title: "Spaced Review", desc: "Reviewing a note on day 1, 3, 7 and 21.", meta: "Sample note" },
+  { id: "note-obsidian-vault", sec: "tech", icon: "keys", series: "Tools", title: "Obsidian Vault Care", desc: "Folders, links and backups for a large vault.", meta: "Sample note" },
+  { id: "note-github-pages", sec: "tech", icon: "dove", series: "Publishing", title: "GitHub Pages", desc: "Publishing a folder of notes as a small site.", meta: "Sample note" }
+];
+
+function sampleBody(n) {
+  return [
+    { h: "About this sample" },
+    { p: "This is sample text for " + n.title + ". It shows how a note reads in the reader, how the text size buttons behave, and how the progress bar tracks your place as you scroll." },
+    { p: "Replace this body with the real note. Headings, paragraphs and numbered lists are supported, and the layout keeps lines to a comfortable length at every size." },
+    { h: "What goes here" },
+    { ol: [
+      ["Summary", "A short paragraph that says what the note is about and why it matters to you."],
+      ["Key points", "Three to five points, each in a sentence or two, written the way you would explain it aloud."],
+      ["Questions to revisit", "What is still unclear, and where you plan to look next."]
+    ] },
+    { h: "Reading and scrolling" },
+    { p: "Use A+ and A− in the top bar to change the text size. The setting is remembered on this device. The thin line at the top of the page fills as you move down the note." },
+    { p: "Press Auto-scroll and pick Slow, Medium or Fast to have the note scroll by itself. Scrolling with your finger or mouse pauses it. At the end of every note you will find Back, Next and Return to top buttons." },
+    { p: "Each note has its own link, so you can bookmark it or send it to someone. Each section also has its own link, shown on the section band." }
+  ];
+}
+
+var SIZES = [{ px: 16, name: "Small" }, { px: 18, name: "Medium" }, { px: 20, name: "Large" }, { px: 23, name: "Extra large" }];
+var sizeIdx = 2;
+var app = document.getElementById("app");
+
+function store(k, v) { try { if (v === undefined) { return localStorage.getItem(k); } localStorage.setItem(k, v); } catch (e) {} return null; }
+function secById(id) { for (var i = 0; i < SECTIONS.length; i++) { if (SECTIONS[i].id === id) { return SECTIONS[i]; } } return null; }
+function noteById(id) { for (var i = 0; i < NOTES.length; i++) { if (NOTES[i].id === id) { return NOTES[i]; } } return null; }
+function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+function colorOf(sec) { return "var(" + secById(sec).cssVar + ")"; }
+
+function applySize() {
+  document.documentElement.style.setProperty("--read-size", SIZES[sizeIdx].px + "px");
+  document.getElementById("sizelabel").textContent = SIZES[sizeIdx].name;
+  document.getElementById("smaller").disabled = sizeIdx === 0;
+  document.getElementById("larger").disabled = sizeIdx === SIZES.length - 1;
+}
+function isDark() { return document.documentElement.getAttribute("data-theme") === "dark"; }
+function paintThemeBtn() { document.getElementById("theme").textContent = isDark() ? "Light" : "Dark"; }
+function scrollMode() { return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"; }
+function toTop() { window.scrollTo({ top: 0, behavior: scrollMode() }); }
+
+function cardHtml(n) {
+  return '<a class="card" style="--c:' + colorOf(n.sec) + '" href="#' + n.id + '">' +
+    '<div class="tile">' + icon(n.icon, 30) + '</div>' +
+    '<div><p class="eyebrow">' + esc(n.series) + '</p><h3>' + esc(n.title) + '</h3><p>' + esc(n.desc) + '</p>' +
+    '<span class="go">Read &rarr;</span>' + (n.real ? '' : '<span class="badge">Sample</span>') + '</div></a>';
+}
+
+function listHtml(filter, query) {
+  var q = (query || "").toLowerCase();
+  var out = "", shown = 0;
+  SECTIONS.forEach(function (s) {
+    if (filter !== "home" && filter !== s.id) { return; }
+    var items = NOTES.filter(function (n) {
+      return n.sec === s.id && (!q || (n.title + " " + n.desc + " " + n.series).toLowerCase().indexOf(q) > -1);
+    });
+    if (!items.length) { return; }
+    shown += items.length;
+    out += '<section class="section" id="sec-' + s.id + '" style="--c:var(' + s.cssVar + ')">' +
+      '<div class="band"><h2>' + icon(s.icon, 24) + esc(s.name) + '</h2><a href="#' + s.id + '">Section link #' + s.id + '</a></div>' +
+      '<div class="grid">' + items.map(cardHtml).join("") + '</div></section>';
+  });
+  return shown ? out : '<p class="empty">No notes match your search.</p>';
+}
+
+function renderDirectory(filter) {
+  var sec = secById(filter);
+  var pills = '<a class="pill" href="#home"' + (filter === "home" ? ' aria-current="page"' : "") + '>All</a>' +
+    SECTIONS.map(function (s) {
+      return '<a class="pill" style="--c:var(' + s.cssVar + ')" href="#' + s.id + '"' + (filter === s.id ? ' aria-current="page"' : "") + '><i></i>' + esc(s.name) + '</a>';
+    }).join("");
+  var count = sec ? NOTES.filter(function (n) { return n.sec === filter; }).length : NOTES.length;
+  var title = sec ? sec.name : "VV Study Notes";
+  var eyebrow = (sec ? "VV Study Notes" : "Directory") + " &middot; " + count + " notes";
+  var lede = sec ? sec.lede : "Personal notes, kept short.";
+  var iconName = sec ? sec.icon : "bible";
+  var hstyle = sec ? ' style="--c:var(' + sec.cssVar + ')"' : "";
+  app.innerHTML = '<div class="head"><div class="hero"' + hstyle + '><div class="hicon">' + icon(iconName, 34) + '</div>' +
+    '<div><p class="eyebrow">' + eyebrow + '</p><h1>' + esc(title) + '</h1></div></div>' +
+    '<p class="lede">' + esc(lede) + '</p></div>' +
+    '<div class="tools"><label for="q" class="eyebrow" style="margin:0">Search</label>' +
+    '<input class="search" id="q" type="search" placeholder="Search every note..." autocomplete="off"><div class="pills">' + pills + '</div></div>' +
+    '<div id="list">' + listHtml(filter, "") + '</div>';
+  document.getElementById("q").addEventListener("input", function (e) {
+    document.getElementById("list").innerHTML = listHtml(filter, e.target.value);
+  });
+}
+
+function blockHtml(b) {
+  if (b.h) { return "<h2>" + esc(b.h) + "</h2>"; }
+  if (b.p) { return "<p>" + esc(b.p) + "</p>"; }
+  return "<ol>" + b.ol.map(function (i) { return "<li><b>" + esc(i[0]) + ".</b> " + esc(i[1]) + "</li>"; }).join("") + "</ol>";
+}
+
+function renderReader(n) {
+  var s = secById(n.sec);
+  var inSec = NOTES.filter(function (x) { return x.sec === n.sec; });
+  var i = inSec.indexOf(n);
+  var prev = inSec[i - 1], next = inSec[i + 1];
+  var body = n.body || sampleBody(n);
+  var back = prev
+    ? '<a class="big back" href="#' + prev.id + '"><span>' + icon("left", 18).replace('class="ic"', 'class="ic" style="display:inline-block;vertical-align:-3px;margin-right:6px"') + 'Back</span><small>' + esc(prev.title) + '</small></a>'
+    : '<a class="big back" href="#' + s.id + '"><span>' + icon("left", 18).replace('class="ic"', 'class="ic" style="display:inline-block;vertical-align:-3px;margin-right:6px"') + 'Back</span><small>All ' + esc(s.name) + ' notes</small></a>';
+  var nxt = next
+    ? '<a class="big next" href="#' + next.id + '"><span>Next' + icon("right", 18).replace('class="ic"', 'class="ic" style="display:inline-block;vertical-align:-3px;margin-left:6px"') + '</span><small>' + esc(next.title) + '</small></a>'
+    : '<a class="big next" href="#' + s.id + '"><span>Done' + icon("right", 18).replace('class="ic"', 'class="ic" style="display:inline-block;vertical-align:-3px;margin-left:6px"') + '</span><small>All ' + esc(s.name) + ' notes</small></a>';
+  app.innerHTML = '<article class="reader" style="--c:var(' + s.cssVar + ')">' +
+    '<div class="hero"><div class="hicon">' + icon(n.icon, 30) + '</div>' +
+    '<div><p class="eyebrow"><a href="#' + s.id + '">' + esc(s.name) + '</a> &middot; ' + esc(n.series) + '</p><h1>' + esc(n.title) + '</h1></div></div>' +
+    '<p class="meta">' + esc(n.meta) + '</p>' +
+    '<div class="toolrow"><button class="tint pillbtn" type="button" data-play="1"></button>' +
+    '<div class="seg tint" role="group" aria-label="Scroll speed"><button type="button" data-speed="slow">Slow</button><button type="button" data-speed="medium">Medium</button><button type="button" data-speed="fast">Fast</button></div>' +
+    '<button class="tint pillbtn" type="button" data-down="1">' + icon("down", 18) + 'Page down</button></div>' +
+    (n.real ? '<p class="note-flag">Homily 1 of 3 is shown. Hell and Purgatory will be added from the full note.</p>' : '<p class="note-flag">Sample text. Replace with the real note.</p>') +
+    '<div class="prose">' + body.map(blockHtml).join("") + '</div>' +
+    '<nav class="endnav" aria-label="Move through ' + esc(s.name) + ' notes">' + back +
+    '<button class="big top" type="button" data-top="1">' + icon("up", 20) + 'Return to top</button>' + nxt + '</nav></article>';
+}
+
+function onScroll() {
+  var bar = document.getElementById("progress");
+  if (bar.hidden) { return; }
+  var h = document.documentElement.scrollHeight - window.innerHeight;
+  bar.style.width = (h > 0 ? Math.min(100, Math.max(0, window.scrollY / h * 100)) : 100) + "%";
+  document.getElementById("toTop").disabled = window.scrollY < 24;
+}
+
+function route() {
+  stopScroll();
+  var h = (location.hash || "#home").slice(1);
+  var n = noteById(h);
+  var reading = !!n;
+  document.getElementById("sizectl").hidden = !reading;
+  document.getElementById("progress").hidden = !reading;
+  document.getElementById("dock").hidden = !reading;
+  if (n) {
+    renderReader(n);
+    document.title = n.title + " | VV Study Notes";
+    document.getElementById("progress").style.background = getComputedStyle(document.documentElement).getPropertyValue(secById(n.sec).cssVar);
+    document.getElementById("dock").style.setProperty("--c", "var(" + secById(n.sec).cssVar + ")");
+  } else {
+    var f = secById(h) ? h : "home";
+    renderDirectory(f);
+    document.title = secById(f) ? secById(f).name + " | VV Study Notes" : "VV Study Notes";
+  }
+  window.scrollTo(0, 0);
+  paintScroll();
+  onScroll();
+}
+
+document.getElementById("brand").innerHTML = icon("bible", 22) + "VV Study Notes";
+document.getElementById("toTop").innerHTML = icon("up", 18) + "Top";
+document.getElementById("smaller").addEventListener("click", function () { if (sizeIdx > 0) { sizeIdx--; store("vv-size", String(sizeIdx)); applySize(); onScroll(); } });
+document.getElementById("larger").addEventListener("click", function () { if (sizeIdx < SIZES.length - 1) { sizeIdx++; store("vv-size", String(sizeIdx)); applySize(); onScroll(); } });
+document.getElementById("theme").addEventListener("click", function () {
+  var t = isDark() ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme", t);
+  store("vv-theme", t);
+  paintThemeBtn();
+  var n = noteById((location.hash || "").slice(1));
+  if (n) { document.getElementById("progress").style.background = getComputedStyle(document.documentElement).getPropertyValue(secById(n.sec).cssVar); }
+});
+document.getElementById("toTop").addEventListener("click", toTop);
+function pageDown() { window.scrollBy({ top: Math.round(window.innerHeight * 0.8), behavior: scrollMode() }); }
+
+var SPEEDS = { slow: 30, medium: 70, fast: 140 };
+var speed = "medium", playing = false, raf = 0, lastT = 0, pos = 0;
+function paintScroll() {
+  var i, els = document.querySelectorAll("[data-speed]");
+  for (i = 0; i < els.length; i++) { els[i].setAttribute("aria-pressed", String(els[i].getAttribute("data-speed") === speed)); }
+  els = document.querySelectorAll("[data-play]");
+  for (i = 0; i < els.length; i++) {
+    els[i].innerHTML = icon(playing ? "pause" : "play", 18) + (playing ? "Pause" : "Auto-scroll");
+    els[i].setAttribute("aria-pressed", String(playing));
+  }
+}
+function stopScroll() { playing = false; cancelAnimationFrame(raf); paintScroll(); }
+function tick(t) {
+  if (!playing) { return; }
+  var dt = Math.min(0.1, (t - lastT) / 1000);
+  lastT = t;
+  if (Math.abs(window.scrollY - pos) > 2) { pos = window.scrollY; }
+  pos += SPEEDS[speed] * dt;
+  var max = document.documentElement.scrollHeight - window.innerHeight;
+  if (pos >= max) { window.scrollTo(0, max); stopScroll(); return; }
+  window.scrollTo(0, pos);
+  raf = requestAnimationFrame(tick);
+}
+function startScroll() {
+  if (playing) { return; }
+  playing = true;
+  pos = window.scrollY;
+  lastT = performance.now();
+  raf = requestAnimationFrame(tick);
+  paintScroll();
+}
+document.addEventListener("click", function (e) {
+  if (!e.target.closest) { return; }
+  var sp = e.target.closest("[data-speed]");
+  if (sp) { speed = sp.getAttribute("data-speed"); store("vv-speed", speed); paintScroll(); return; }
+  if (e.target.closest("[data-play]")) { if (playing) { stopScroll(); } else { startScroll(); } return; }
+  if (e.target.closest("[data-top]")) { stopScroll(); toTop(); return; }
+  if (e.target.closest("[data-down]")) { pageDown(); }
+});
+document.getElementById("toTop").addEventListener("click", stopScroll);
+window.addEventListener("wheel", function () { if (playing) { stopScroll(); } }, { passive: true });
+window.addEventListener("touchmove", function () { if (playing) { stopScroll(); } }, { passive: true });
+window.addEventListener("hashchange", route);
+window.addEventListener("scroll", onScroll, { passive: true });
+window.addEventListener("resize", onScroll);
+
+var savedTheme = store("vv-theme");
+if (savedTheme === "dark") { document.documentElement.setAttribute("data-theme", "dark"); }
+var savedSpeed = store("vv-speed");
+if (savedSpeed === "slow" || savedSpeed === "medium" || savedSpeed === "fast") { speed = savedSpeed; }
+var savedSize = parseInt(store("vv-size"), 10);
+if (savedSize >= 0 && savedSize < SIZES.length) { sizeIdx = savedSize; }
+applySize();
+paintThemeBtn();
+route();
+</script>
+
+</body>
+</html>
