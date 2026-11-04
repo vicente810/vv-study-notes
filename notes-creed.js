@@ -1,39 +1,20 @@
 /* The Creed: word-by-word study notes (series of 15). Generated from the Dropbox notes. */
 window.NOTES_CREED = [
  {
-  "id": "creed-0",
+  "id": "creed",
   "sec": "faith",
   "icon": "bible",
-  "series": "The Creed",
+  "book": "creed",
+  "hub": true,
+  "series": "Article 0",
   "title": "The Apostles' Creed, Article by Article",
-  "desc": "The index to the whole series, article by article.",
+  "desc": "A word-by-word study of the Apostles' and Nicene Creeds, article by article.",
   "meta": "The Creed · Series hub",
   "real": true,
   "flag": "",
   "body": [
    {
-    "p": "This is the index/hub for a word-by-word study of the Apostles' and Nicene Creeds, article by article. It anchors [Two Creeds, One Faith: Apostles' and Nicene Compared](#creed-00) (Apostles' vs. Nicene compared) through [The whole Creed](#creed-13) (closing synthesis)."
-   },
-   {
-    "h": "The series in order"
-   },
-   {
-    "ul": [
-     "[Two Creeds: Two Creeds, One Faith: Apostles' and Nicene Compared](#creed-00)",
-     "[Article 1: I Believe in God, the Father Almighty, Creator of Heaven and Earth](#creed-1)",
-     "[Article 2: And in Jesus Christ, His Only Son, Our Lord](#creed-2)",
-     "[Article 3: Conceived by the Holy Spirit, Born of the Virgin Mary](#creed-3)",
-     "[Article 4: Suffered Under Pontius Pilate, Was Crucified, Died, and Was Buried](#creed-4)",
-     "[Article 5: He Descended into Hell, on the Third Day He Rose Again](#creed-5)",
-     "[Article 6: He Ascended into Heaven, Seated at the Right Hand of the Father](#creed-6)",
-     "[Article 7: He Will Come Again to Judge the Living and the Dead](#creed-7)",
-     "[Article 8: I Believe in the Holy Spirit](#creed-8)",
-     "[Article 9: The Holy Catholic Church, the Communion of Saints](#creed-9)",
-     "[Article 10: The Forgiveness of Sins](#creed-10)",
-     "[Article 11: The Resurrection of the Body](#creed-11)",
-     "[Article 12: And Life Everlasting](#creed-12)",
-     "[Closing: The Whole Creed as One Act of Faith](#creed-13)"
-    ]
+    "p": "A word-by-word study of the Apostles' Creed and the Nicene Creed, article by article: first the two Creeds side by side, then each of the twelve articles in order, then the whole Creed as one act of faith."
    }
   ]
  },
@@ -41,7 +22,9 @@ window.NOTES_CREED = [
   "id": "creed-00",
   "sec": "faith",
   "icon": "cross",
-  "series": "The Creed",
+  "book": "creed",
+  "hub": false,
+  "series": "Introduction",
   "title": "Two Creeds, One Faith: Apostles' and Nicene Compared",
   "desc": "The Apostles' and Nicene Creeds compared, and why the Church has both.",
   "meta": "The Creed · Introduction",
@@ -49,7 +32,7 @@ window.NOTES_CREED = [
   "flag": "",
   "body": [
    {
-    "p": "**Series:** [Series hub](#creed-0) · Followed by [Article 1](#creed-1)"
+    "p": "**Series:** [Contents](#creed) · Followed by [Article 1](#creed-1)"
    },
    {
     "p": "The historical introduction to the Creed-0 project: why there are two Creeds, what happened at Nicaea (325) and Constantinople (381), and what each council's wording specifically settled."
@@ -114,7 +97,9 @@ window.NOTES_CREED = [
   "id": "creed-1",
   "sec": "faith",
   "icon": "cross",
-  "series": "The Creed",
+  "book": "creed",
+  "hub": false,
+  "series": "Article 1",
   "title": "I Believe in God, the Father Almighty, Creator of Heaven and Earth",
   "desc": "I believe in God, the Father almighty, Creator of heaven and earth.",
   "meta": "The Creed · Article 1",
@@ -125,7 +110,7 @@ window.NOTES_CREED = [
     "p": "*Article 1 — word-by-word study*"
    },
    {
-    "p": "**Series:** [Series hub](#creed-0) · Preceded by [Two Creeds, One Faith: Apostles' and Nicene Compared](#creed-00)"
+    "p": "**Series:** [Contents](#creed) · Preceded by [Two Creeds, One Faith: Apostles' and Nicene Compared](#creed-00)"
    },
    {
     "h": "The Text"
@@ -290,7 +275,9 @@ window.NOTES_CREED = [
   "id": "creed-2",
   "sec": "faith",
   "icon": "cross",
-  "series": "The Creed",
+  "book": "creed",
+  "hub": false,
+  "series": "Article 2",
   "title": "And in Jesus Christ, His Only Son, Our Lord",
   "desc": "And in Jesus Christ, his only Son, our Lord.",
   "meta": "The Creed · Article 2",
@@ -301,7 +288,7 @@ window.NOTES_CREED = [
     "p": "*Article 2 — word-by-word study*"
    },
    {
-    "p": "**Series:** [Series hub](#creed-0) · Preceded by [Article 1](#creed-1)"
+    "p": "**Series:** [Contents](#creed) · Preceded by [Article 1](#creed-1)"
    },
    {
     "h": "The Text"
@@ -454,7 +441,9 @@ window.NOTES_CREED = [
   "id": "creed-3",
   "sec": "faith",
   "icon": "cross",
-  "series": "The Creed",
+  "book": "creed",
+  "hub": false,
+  "series": "Article 3",
   "title": "Conceived by the Holy Spirit, Born of the Virgin Mary",
   "desc": "Who was conceived by the Holy Spirit, born of the Virgin Mary.",
   "meta": "The Creed · Article 3",
@@ -465,7 +454,7 @@ window.NOTES_CREED = [
     "p": "*Article 3 — word-by-word study*"
    },
    {
-    "p": "**Series:** [Series hub](#creed-0) · Preceded by [Article 2](#creed-2)"
+    "p": "**Series:** [Contents](#creed) · Preceded by [Article 2](#creed-2)"
    },
    {
     "h": "The Text"
@@ -550,7 +539,9 @@ window.NOTES_CREED = [
   "id": "creed-4",
   "sec": "faith",
   "icon": "cross",
-  "series": "The Creed",
+  "book": "creed",
+  "hub": false,
+  "series": "Article 4",
   "title": "Suffered Under Pontius Pilate, Was Crucified, Died, and Was Buried",
   "desc": "He suffered under Pontius Pilate, was crucified, died, and was buried.",
   "meta": "The Creed · Article 4",
@@ -561,7 +552,7 @@ window.NOTES_CREED = [
     "p": "*Article 4 — word-by-word study*"
    },
    {
-    "p": "**Series:** [Series hub](#creed-0) · Preceded by [Article 3](#creed-3)"
+    "p": "**Series:** [Contents](#creed) · Preceded by [Article 3](#creed-3)"
    },
    {
     "h": "The Text"
@@ -665,7 +656,9 @@ window.NOTES_CREED = [
   "id": "creed-5",
   "sec": "faith",
   "icon": "cross",
-  "series": "The Creed",
+  "book": "creed",
+  "hub": false,
+  "series": "Article 5",
   "title": "He Descended into Hell, on the Third Day He Rose Again",
   "desc": "He descended into hell. On the third day he rose again from the dead.",
   "meta": "The Creed · Article 5",
@@ -676,7 +669,7 @@ window.NOTES_CREED = [
     "p": "*Article 5 — word-by-word study*"
    },
    {
-    "p": "**Series:** [Series hub](#creed-0) · Preceded by [Article 4](#creed-4)"
+    "p": "**Series:** [Contents](#creed) · Preceded by [Article 4](#creed-4)"
    },
    {
     "h": "The Text"
@@ -764,7 +757,9 @@ window.NOTES_CREED = [
   "id": "creed-6",
   "sec": "faith",
   "icon": "cross",
-  "series": "The Creed",
+  "book": "creed",
+  "hub": false,
+  "series": "Article 6",
   "title": "He Ascended into Heaven, Seated at the Right Hand of the Father",
   "desc": "He ascended into heaven, and is seated at the right hand of God the Father almighty.",
   "meta": "The Creed · Article 6",
@@ -775,7 +770,7 @@ window.NOTES_CREED = [
     "p": "*Article 6 — word-by-word study*"
    },
    {
-    "p": "**Series:** [Series hub](#creed-0) · Preceded by [Article 5](#creed-5)"
+    "p": "**Series:** [Contents](#creed) · Preceded by [Article 5](#creed-5)"
    },
    {
     "h": "The Text"
@@ -863,7 +858,9 @@ window.NOTES_CREED = [
   "id": "creed-7",
   "sec": "faith",
   "icon": "cross",
-  "series": "The Creed",
+  "book": "creed",
+  "hub": false,
+  "series": "Article 7",
   "title": "He Will Come Again to Judge the Living and the Dead",
   "desc": "From there he will come to judge the living and the dead.",
   "meta": "The Creed · Article 7",
@@ -874,7 +871,7 @@ window.NOTES_CREED = [
     "p": "*Article 7 — word-by-word study*"
    },
    {
-    "p": "**Series:** [Series hub](#creed-0) · Preceded by [Article 6](#creed-6)"
+    "p": "**Series:** [Contents](#creed) · Preceded by [Article 6](#creed-6)"
    },
    {
     "p": "*This article was flagged in the original project plan as thin — touched only briefly elsewhere in FAITH, with no dedicated deep treatment. Built fresh, at the same depth as the rest of this series.*"
@@ -968,7 +965,9 @@ window.NOTES_CREED = [
   "id": "creed-8",
   "sec": "faith",
   "icon": "cross",
-  "series": "The Creed",
+  "book": "creed",
+  "hub": false,
+  "series": "Article 8",
   "title": "I Believe in the Holy Spirit",
   "desc": "I believe in the Holy Spirit.",
   "meta": "The Creed · Article 8",
@@ -979,7 +978,7 @@ window.NOTES_CREED = [
     "p": "*Article 8 — word-by-word study*"
    },
    {
-    "p": "**Series:** [Series hub](#creed-0) · Preceded by [Article 7](#creed-7)"
+    "p": "**Series:** [Contents](#creed) · Preceded by [Article 7](#creed-7)"
    },
    {
     "h": "The Text"
@@ -1103,7 +1102,9 @@ window.NOTES_CREED = [
   "id": "creed-9",
   "sec": "faith",
   "icon": "cross",
-  "series": "The Creed",
+  "book": "creed",
+  "hub": false,
+  "series": "Article 9",
   "title": "The Holy Catholic Church, the Communion of Saints",
   "desc": "The holy catholic Church, the communion of saints.",
   "meta": "The Creed · Article 9",
@@ -1114,7 +1115,7 @@ window.NOTES_CREED = [
     "p": "*Article 9 — word-by-word study*"
    },
    {
-    "p": "**Series:** [Series hub](#creed-0) · Preceded by [Article 8](#creed-8)"
+    "p": "**Series:** [Contents](#creed) · Preceded by [Article 8](#creed-8)"
    },
    {
     "h": "The Text"
@@ -1227,7 +1228,9 @@ window.NOTES_CREED = [
   "id": "creed-10",
   "sec": "faith",
   "icon": "cross",
-  "series": "The Creed",
+  "book": "creed",
+  "hub": false,
+  "series": "Article 10",
   "title": "The Forgiveness of Sins",
   "desc": "The forgiveness of sins.",
   "meta": "The Creed · Article 10",
@@ -1238,7 +1241,7 @@ window.NOTES_CREED = [
     "p": "*Article 10 — word-by-word study*"
    },
    {
-    "p": "**Series:** [Series hub](#creed-0) · Preceded by [Article 9](#creed-9)"
+    "p": "**Series:** [Contents](#creed) · Preceded by [Article 9](#creed-9)"
    },
    {
     "p": "*This article was flagged in the original project plan as thin — covered elsewhere in FAITH's SACRAMENTS material, but not previously framed within the Creed itself. Built fresh here as the Creed-specific bridge.*"
@@ -1323,7 +1326,9 @@ window.NOTES_CREED = [
   "id": "creed-11",
   "sec": "faith",
   "icon": "cross",
-  "series": "The Creed",
+  "book": "creed",
+  "hub": false,
+  "series": "Article 11",
   "title": "The Resurrection of the Body",
   "desc": "The resurrection of the body.",
   "meta": "The Creed · Article 11",
@@ -1334,7 +1339,7 @@ window.NOTES_CREED = [
     "p": "*Article 11 — word-by-word study*"
    },
    {
-    "p": "**Series:** [Series hub](#creed-0) · Preceded by [Article 10](#creed-10)"
+    "p": "**Series:** [Contents](#creed) · Preceded by [Article 10](#creed-10)"
    },
    {
     "p": "*This article was flagged in the original project plan as thin — the general resurrection was touched only in relation to Christ's own body elsewhere in FAITH, with no dedicated treatment. Built fresh.*"
@@ -1418,7 +1423,9 @@ window.NOTES_CREED = [
   "id": "creed-12",
   "sec": "faith",
   "icon": "cross",
-  "series": "The Creed",
+  "book": "creed",
+  "hub": false,
+  "series": "Article 12",
   "title": "And Life Everlasting",
   "desc": "And life everlasting. Amen.",
   "meta": "The Creed · Article 12",
@@ -1429,7 +1436,7 @@ window.NOTES_CREED = [
     "p": "*Article 12 (Final Article) — word-by-word study*"
    },
    {
-    "p": "**Series:** [Series hub](#creed-0) · Preceded by [Article 11](#creed-11)"
+    "p": "**Series:** [Contents](#creed) · Preceded by [Article 11](#creed-11)"
    },
    {
     "p": "*This article was flagged in the original project plan as thin — touched only briefly in relation to eschatology elsewhere in FAITH, with no dedicated treatment. Built fresh, closing the twelve articles.*"
@@ -1510,7 +1517,9 @@ window.NOTES_CREED = [
   "id": "creed-13",
   "sec": "faith",
   "icon": "cross",
-  "series": "The Creed",
+  "book": "creed",
+  "hub": false,
+  "series": "Closing synthesis",
   "title": "The Whole Creed as One Act of Faith",
   "desc": "The Creed prayed as one act of faith.",
   "meta": "The Creed · Closing synthesis",
@@ -1521,7 +1530,7 @@ window.NOTES_CREED = [
     "p": "*The capstone of the Creed-0 project — read after Creed-1 through Creed-12*"
    },
    {
-    "p": "**Series:** [Series hub](#creed-0)"
+    "p": "**Series:** [Contents](#creed)"
    },
    {
     "h": "Why This Note Exists"

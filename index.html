@@ -219,6 +219,17 @@ function sampleBody(n) {
   ];
 }
 
+var BOOKS = [
+  { id: "creed", sec: "faith", icon: "bible", title: "The Creed", desc: "A word-by-word study of the Apostles' and Nicene Creeds, article by article." }
+];
+function bookById(id) { for (var i = 0; i < BOOKS.length; i++) { if (BOOKS[i].id === id) { return BOOKS[i]; } } return null; }
+function chaptersOf(id) { return NOTES.filter(function (n) { return n.book === id && !n.hub; }); }
+function hubOf(id) { for (var i = 0; i < NOTES.length; i++) { if (NOTES[i].book === id && NOTES[i].hub) { return NOTES[i]; } } return null; }
+function cardCount(sec) {
+  return NOTES.filter(function (n) { return !n.book && (!sec || n.sec === sec); }).length +
+    BOOKS.filter(function (b) { return !sec || b.sec === sec; }).length;
+}
+
 var SIZES = [{ px: 16, name: "Small" }, { px: 18, name: "Medium" }, { px: 20, name: "Large" }, { px: 23, name: "Extra large" }];
 var sizeIdx = 2;
 var app = document.getElementById("app");
@@ -247,19 +258,29 @@ function cardHtml(n) {
     '<span class="go">Read &rarr;</span>' + (n.real ? '' : '<span class="badge">Sample</span>') + '</div></a>';
 }
 
+function bookCardHtml(b) {
+  return '<a class="card" style="--c:' + colorOf(b.sec) + '" href="#' + b.id + '">' +
+    '<div class="tile">' + icon(b.icon, 30) + '</div>' +
+    '<div><p class="eyebrow">Book &middot; ' + chaptersOf(b.id).length + ' chapters</p><h3>' + esc(b.title) + '</h3><p>' + esc(b.desc) + '</p>' +
+    '<span class="go">Open the book &rarr;</span></div></a>';
+}
+
 function listHtml(filter, query) {
   var q = (query || "").toLowerCase();
   var out = "", shown = 0;
   SECTIONS.forEach(function (s) {
     if (filter !== "home" && filter !== s.id) { return; }
     var items = NOTES.filter(function (n) {
-      return n.sec === s.id && (!q || (n.title + " " + n.desc + " " + n.series).toLowerCase().indexOf(q) > -1);
+      return n.sec === s.id && !n.book && (!q || (n.title + " " + n.desc + " " + n.series).toLowerCase().indexOf(q) > -1);
     });
-    if (!items.length) { return; }
-    shown += items.length;
+    var books = BOOKS.filter(function (b) {
+      return b.sec === s.id && (!q || (b.title + " " + b.desc).toLowerCase().indexOf(q) > -1 || chaptersOf(b.id).some(function (n) { return (n.title + " " + n.desc).toLowerCase().indexOf(q) > -1; }));
+    });
+    if (!items.length && !books.length) { return; }
+    shown += items.length + books.length;
     out += '<section class="section" id="sec-' + s.id + '" style="--c:var(' + s.cssVar + ')">' +
       '<div class="band"><h2>' + icon(s.icon, 24) + esc(s.name) + '</h2><a href="#' + s.id + '">Section link #' + s.id + '</a></div>' +
-      '<div class="grid">' + items.map(cardHtml).join("") + '</div></section>';
+      '<div class="grid">' + books.map(bookCardHtml).join("") + items.map(cardHtml).join("") + '</div></section>';
   });
   return shown ? out : '<p class="empty">No notes match your search.</p>';
 }
@@ -270,9 +291,9 @@ function renderDirectory(filter) {
     SECTIONS.filter(function (s) { return NOTES.some(function (n) { return n.sec === s.id; }); }).map(function (s) {
       return '<a class="pill" style="--c:var(' + s.cssVar + ')" href="#' + s.id + '"' + (filter === s.id ? ' aria-current="page"' : "") + '><i></i>' + esc(s.name) + '</a>';
     }).join("");
-  var count = sec ? NOTES.filter(function (n) { return n.sec === filter; }).length : NOTES.length;
+  var count = sec ? cardCount(filter) : cardCount();
   var title = sec ? sec.name : "VV Study Notes";
-  var eyebrow = (sec ? "VV Study Notes" : "Directory") + " &middot; " + count + " notes";
+  var eyebrow = (sec ? "VV Study Notes" : "Directory") + " &middot; " + count + (count === 1 ? " item" : " items");
   var lede = sec ? sec.lede : "Personal notes, kept short.";
   var iconName = sec ? sec.icon : "bible";
   var hstyle = sec ? ' style="--c:var(' + sec.cssVar + ')"' : "";
@@ -303,21 +324,34 @@ function blockHtml(b) {
   return "<ol>" + b.ol.map(function (i) { return "<li><b>" + esc(i[0]) + ".</b> " + esc(i[1]) + "</li>"; }).join("") + "</ol>";
 }
 
+function renderBook(b) {
+  var s = secById(b.sec), hub = hubOf(b.id), ch = chaptersOf(b.id);
+  var intro = hub ? hub.body.map(blockHtml).join("") : "";
+  app.innerHTML = '<article class="reader" style="--c:var(' + s.cssVar + ')">' +
+    '<div class="hero"><div class="hicon">' + icon(b.icon, 30) + '</div>' +
+    '<div><p class="eyebrow"><a href="#' + s.id + '">' + esc(s.name) + '</a> &middot; Book &middot; ' + ch.length + ' chapters</p><h1>' + esc(b.title) + '</h1></div></div>' +
+    '<div class="prose" style="margin-top:20px">' + intro + '</div>' +
+    '<a class="big next" style="margin:6px 0 28px" href="#' + ch[0].id + '"><span>Start reading' + icon("right", 18).replace('class="ic"', 'class="ic" style="display:inline-block;vertical-align:-3px;margin-left:6px"') + '</span><small>' + esc(ch[0].title) + '</small></a>' +
+    '<p class="eyebrow">Contents</p><div class="grid">' + ch.map(cardHtml).join("") + '</div>' +
+    '<nav class="endnav" aria-label="Back"><a class="big back" href="#' + s.id + '"><span>' + icon("left", 18).replace('class="ic"', 'class="ic" style="display:inline-block;vertical-align:-3px;margin-right:6px"') + 'Back</span><small>All ' + esc(s.name) + ' notes</small></a></nav></article>';
+}
+
 function renderReader(n) {
   var s = secById(n.sec);
-  var inSec = NOTES.filter(function (x) { return x.sec === n.sec; });
+  var bk = n.book ? bookById(n.book) : null;
+  var inSec = bk ? chaptersOf(bk.id) : NOTES.filter(function (x) { return x.sec === n.sec && !x.book; });
   var i = inSec.indexOf(n);
   var prev = inSec[i - 1], next = inSec[i + 1];
   var body = n.body || sampleBody(n);
   var back = prev
     ? '<a class="big back" href="#' + prev.id + '"><span>' + icon("left", 18).replace('class="ic"', 'class="ic" style="display:inline-block;vertical-align:-3px;margin-right:6px"') + 'Back</span><small>' + esc(prev.title) + '</small></a>'
-    : '<a class="big back" href="#' + s.id + '"><span>' + icon("left", 18).replace('class="ic"', 'class="ic" style="display:inline-block;vertical-align:-3px;margin-right:6px"') + 'Back</span><small>All ' + esc(s.name) + ' notes</small></a>';
+    : '<a class="big back" href="#' + (bk ? bk.id : s.id) + '"><span>' + icon("left", 18).replace('class="ic"', 'class="ic" style="display:inline-block;vertical-align:-3px;margin-right:6px"') + 'Back</span><small>' + (bk ? 'Contents' : 'All ' + esc(s.name) + ' notes') + '</small></a>';
   var nxt = next
     ? '<a class="big next" href="#' + next.id + '"><span>Next' + icon("right", 18).replace('class="ic"', 'class="ic" style="display:inline-block;vertical-align:-3px;margin-left:6px"') + '</span><small>' + esc(next.title) + '</small></a>'
-    : '<a class="big next" href="#' + s.id + '"><span>Done' + icon("right", 18).replace('class="ic"', 'class="ic" style="display:inline-block;vertical-align:-3px;margin-left:6px"') + '</span><small>All ' + esc(s.name) + ' notes</small></a>';
+    : '<a class="big next" href="#' + (bk ? bk.id : s.id) + '"><span>Done' + icon("right", 18).replace('class="ic"', 'class="ic" style="display:inline-block;vertical-align:-3px;margin-left:6px"') + '</span><small>' + (bk ? 'Contents' : 'All ' + esc(s.name) + ' notes') + '</small></a>';
   app.innerHTML = '<article class="reader" style="--c:var(' + s.cssVar + ')">' +
     '<div class="hero"><div class="hicon">' + icon(n.icon, 30) + '</div>' +
-    '<div><p class="eyebrow"><a href="#' + s.id + '">' + esc(s.name) + '</a> &middot; ' + esc(n.series) + '</p><h1>' + esc(n.title) + '</h1></div></div>' +
+    '<div><p class="eyebrow"><a href="#' + s.id + '">' + esc(s.name) + '</a> &middot; ' + (bk ? '<a href="#' + bk.id + '">' + esc(bk.title) + '</a> &middot; ' : '') + esc(n.series) + '</p><h1>' + esc(n.title) + '</h1></div></div>' +
     '<p class="meta">' + esc(n.meta) + '</p>' +
     '<div class="toolrow"><button class="tint pillbtn" type="button" data-play="1"></button>' +
     '<div class="seg tint" role="group" aria-label="Scroll speed"><button type="button" data-speed="slow">Slow</button><button type="button" data-speed="medium">Medium</button><button type="button" data-speed="fast">Fast</button></div>' +
@@ -339,12 +373,16 @@ function onScroll() {
 function route() {
   stopScroll();
   var h = (location.hash || "#home").slice(1);
-  var n = noteById(h);
+  var bk = bookById(h);
+  var n = bk ? null : noteById(h);
   var reading = !!n;
   document.getElementById("sizectl").hidden = !reading;
   document.getElementById("progress").hidden = !reading;
   document.getElementById("dock").hidden = !reading;
-  if (n) {
+  if (bk) {
+    renderBook(bk);
+    document.title = bk.title + " | VV Study Notes";
+  } else if (n) {
     renderReader(n);
     document.title = n.title + " | VV Study Notes";
     document.getElementById("progress").style.background = getComputedStyle(document.documentElement).getPropertyValue(secById(n.sec).cssVar);
