@@ -7,7 +7,7 @@ window.NOTES_JP2 = [
   "title": "Heaven, Hell and Purgatory (John Paul II, 1999)",
   "desc": "John Paul II's three 1999 audiences: heaven, hell and purgatory as states of being, with the Catechism on the last things.",
   "series": "Pope John Paul II",
- "meta": "Faith · Pope John Paul II",
+  "meta": "Faith · Pope John Paul II",
   "real": true,
   "flag": "",
   "body": [
@@ -28,6 +28,9 @@ window.NOTES_JP2 = [
    },
    {
     "h": "Heaven is Fullness of Communion with God"
+   },
+   {
+    "video": "jp2-heaven.mp4"
    },
    {
     "quote": [
@@ -156,6 +159,9 @@ window.NOTES_JP2 = [
    },
    {
     "h": "Hell is the State of Those who Reject God"
+   },
+   {
+    "video": "jp2-hell.mp4"
    },
    {
     "p": "*At the General Audience of Wednesday, 28 July 1999, the Holy Father reflected on hell as the definitive rejection of God. In his catechesis, the Pope said that care should be taken to interpret correctly the images of hell in Sacred Scripture, and explained that “hell is the ultimate consequence of sin itself... Rather than a place, hell indicates the state of those who freely and definitively separate themselves from God, the source of all life and joy”.*"
@@ -434,6 +440,9 @@ window.NOTES_JP2 = [
    },
    {
     "h": "Purgatory is not a place but a condition of existence"
+   },
+   {
+    "video": "jp2-purgatory.mp4"
    },
    {
     "p": "4. In the New Testament Christ is presented as the intercessor who assumes the functions of high priest on the day of expiation (cf. Heb 5:7; 7:25). But in Christ the priesthood is presented in a new and definitive form."
