@@ -35,7 +35,7 @@ window.NOTES_CREED = [
     "video": "apostles-creed.mp4"
    },
    {
-    "p": "*Video: the Apostles' Creed, prayed slowly (about two minutes).*"
+    "p": "*Video: the Apostles' Creed, narrated slowly (about two minutes). Turn the sound on.*"
    },
    {
     "p": "**Series:** [Contents](#creed) · Followed by [Article 1](#creed-1)"
